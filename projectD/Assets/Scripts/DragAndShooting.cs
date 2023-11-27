@@ -200,11 +200,13 @@ public class DragAndShooting : MonoBehaviour
             pushObjectsScript.ApplyPushForce(throwDir);
         }
         // 5초 후에 CameraRotate 메서드를 호출
-        Invoke("SwitchTurns", 3f);
+        Invoke("SwitchTurn", 3f);
     }
 
+    public delegate void SwitchTurnEvent();
+    public static event SwitchTurnEvent OnSwitchTurn;
 
-    void SwitchTurns()
+    void SwitchTurn()
     {
         // 여기에 턴 변경 로직을 추가하면 됩니다.
         if (mainCamera == null) return;
@@ -227,5 +229,10 @@ public class DragAndShooting : MonoBehaviour
         // X축은 현재 각도로, Y축은 새로 계산된 회전 각도로, Z축은 현재 각도로 설정
         mainCamera.transform.rotation = Quaternion.Euler(40f, newYRotation, 0f);
         mainCamera.transform.position = oppositePosition;
+
+        if (OnSwitchTurn != null)
+        {
+            OnSwitchTurn();
+        }
     }
 }
